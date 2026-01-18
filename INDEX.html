@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataMaster Pro - Editor</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+
+    <div class="app-container">
+        
+        <nav class="glass-panel navbar">
+            <div class="brand">
+                <div class="logo-icon"><i class="ph ph-hexagon-fill"></i></div>
+                <div class="brand-text">
+                    <h1>DataMaster <span class="badge">PRO</span></h1>
+                    <p>Advanced Data Cleaner</p>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <div class="user-profile">
+                    <div class="avatar">A</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+        </nav>
+
+        <section id="upload-section" class="upload-wrapper">
+            <div class="drop-zone glass-panel" id="drop-zone">
+                <div class="icon-circle">
+                    <i class="ph ph-file-csv"></i>
+                </div>
+                <h2>Upload Excel or CSV</h2>
+                <p>Drag & drop or click to browse</p>
+                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Browse File</button>
+                <input type="file" id="file-input" hidden accept=".xlsx, .xls, .csv">
+                <div id="loader" class="hidden"><i class="ph ph-spinner ph-spin"></i> Processing...</div>
+            </div>
+        </section>
+
+        <main id="dashboard" class="hidden">
+            
+            <div class="stats-container">
+                <div class="stat-box glass-panel">
+                    <div class="stat-icon bg-blue"><i class="ph ph-table"></i></div>
+                    <div class="stat-info">
+                        <span class="label">Total Rows</span>
+                        <h2 id="val-total-rows">0</h2>
+                    </div>
+                    <div class="mini-progress">
+                        <div class="bar-bg"><div id="bar-total" class="bar-fill bg-blue" style="width: 100%"></div></div>
+                    </div>
+                </div>
+
+                <div class="stat-box glass-panel">
+                    <div class="stat-icon bg-red"><i class="ph ph-warning-octagon"></i></div>
+                    <div class="stat-info">
+                        <span class="label">Missing Data Rows</span>
+                        <h2 id="val-missing-rows">0</h2>
+                    </div>
+                    <div class="mini-progress">
+                        <div class="bar-bg"><div id="bar-missing" class="bar-fill bg-red" style="width: 0%"></div></div>
+                        <span class="perc-text" id="txt-missing-perc">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card glass-panel">
+                    <h3><i class="ph ph-chart-bar"></i> Missing Values by Column</h3>
+                    <div id="column-chart" class="chart-body"></div>
+                </div>
+                <div class="chart-card glass-panel">
+                    <h3><i class="ph ph-squares-four"></i> Data Heatmap</h3>
+                    <div class="heatmap-wrapper">
+                        <table id="heatmap-table"></table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar glass-panel">
+                <div class="search-group">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Search data...">
+                </div>
+                <div class="actions-group">
+                    <button class="btn btn-outline" onclick="exportData('full')">
+                        <i class="ph ph-download-simple"></i> Download Fixed Excel
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="exportData('missing')">
+                        <i class="ph ph-file-x"></i> Missing Only Report
+                    </button>
+                    <button class="btn btn-primary" onclick="printReport()">
+                        <i class="ph ph-printer"></i> PDF Report (A4 Landscape)
+                    </button>
+                </div>
+            </div>
+
+            <div id="cards-container" class="cards-grid">
+                </div>
+
+        </main>
+
+        <div id="print-layout">
+            <div class="print-header">
+                <h1>Data Quality & Cleaning Report</h1>
+                <p>Generated on: <span id="print-date"></span></p>
+                
+                <div class="print-stats-row">
+                    <div class="p-stat">Total Rows: <strong id="p-total">0</strong></div>
+                    <div class="p-stat">Incomplete Rows: <strong id="p-missing" style="color:red">0</strong></div>
+                    <div class="p-stat">Completeness: <strong id="p-complete">0%</strong></div>
+                </div>
+            </div>
+            
+            <div class="print-content">
+                <table class="print-table">
+                    <thead id="print-thead"></thead>
+                    <tbody id="print-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
